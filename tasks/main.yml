@@ -1,0 +1,29 @@
+- name: Check current timezone
+  become: true
+  become_user: root
+  shell: timedatectl show --property=Timezone --value
+  register: current_timezone
+  changed_when: false
+
+- name: Set the timezone 
+  command: "timedatectl set-timezone {{timezone}}"
+  when: current_timezone.stdout !=  timezone 
+
+- name: Install ntpdate
+  apt:
+    name: ntpdate
+    state: present
+
+- name: Run ntpdate
+  command: "ntpdate -u {{ntp_server}}"
+
+- name: Install locales
+  apt:
+    name: locales
+    state: present
+
+
+- name: ensure we have fi_FI locale 
+  locale_gen:
+    name: fi_FI.UTF-8
+    state: present

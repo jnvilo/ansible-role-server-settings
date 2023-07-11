@@ -1,0 +1,3 @@
+# chrony.conf template
+server pool.ntp.org iburst
+
